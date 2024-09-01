@@ -1,36 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import Skeleton from "react-loading-skeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NewsItem from "./NewsItem";
 import "react-loading-skeleton/dist/skeleton.css";
 
-export class News extends Component {
-  static propTypes = {
-    articles: PropTypes.array.isRequired,
-    selectedType: PropTypes.string.isRequired,
-    selectedCategory: PropTypes.string.isRequired,
-    selectedCountry: PropTypes.string.isRequired,
-    searchQuery: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired,
-    page: PropTypes.number.isRequired,
-    totalPages: PropTypes.number.isRequired,
-    badgeColor: PropTypes.string.isRequired,
-    handleNextClick: PropTypes.func.isRequired,
-  };
-
-  render() {
+const News =(props)=> {
+  
     return (
       <>
-        <h1 className="text-center">
+        <h1 className="text-center" style={{margin:'35px 0px',marginTop:'90px'}}>
           Daily News -{" "}
-          {this.props.selectedType.toLowerCase().charAt(0).toUpperCase() +
-            this.props.selectedType.slice(1)}{" "}
+          {props.selectedType.toLowerCase().charAt(0).toUpperCase() +
+            props.selectedType.slice(1)}{" "}
           from{" "}
-          {this.props.selectedCategory.toLowerCase().charAt(0).toUpperCase() +
-            this.props.selectedCategory.slice(1)}
+          {props.selectedCategory.toLowerCase().charAt(0).toUpperCase() +
+            props.selectedCategory.slice(1)}
         </h1>
-        {this.props.loading && (
+        {props.loading && (
           <div className="container">
             <div className="row">
               {[1, 2, 3, 4].map((n) => (
@@ -43,9 +29,9 @@ export class News extends Component {
           </div>
         )}
         <InfiniteScroll
-          dataLength={this.props.articles.length}
-          next={this.props.handleNextClick}
-          hasMore={this.props.page < this.props.totalPages}
+          dataLength={props.articles.length}
+          next={props.handleNextClick}
+          hasMore={props.page < props.totalPages}
           loader={
             <div className="container">
               <div className="row">
@@ -61,7 +47,7 @@ export class News extends Component {
         >
           <div className="container">
             <div className="row">
-              {this.props.articles.map((element, index) => (
+              {props.articles.map((element, index) => (
                 <div
                   className="col-md-3 my-3"
                   key={element.url + index || index}
@@ -79,7 +65,7 @@ export class News extends Component {
                     author={element.author}
                     date={element.publishedAt}
                     source={element.source.name}
-                    badgeColor={this.props.badgeColor}
+                    badgeColor={props.badgeColor}
                   />
                 </div>
               ))}
@@ -89,6 +75,5 @@ export class News extends Component {
       </>
     );
   }
-}
 
 export default News;

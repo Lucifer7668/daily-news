@@ -1,40 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Select from 'react-select';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-export class Navbar extends Component {
-  static propTypes = {
-    countries: PropTypes.array.isRequired,
-    types: PropTypes.array.isRequired,
-    categories: PropTypes.array.isRequired, // Make sure you have categories in PropTypes
-    onCountryChange: PropTypes.func.isRequired,
-    onCategoryChange: PropTypes.func.isRequired,
-    onTypeChange: PropTypes.func.isRequired,
-    onSearchChange: PropTypes.func.isRequired,
-    selectedCountry: PropTypes.string.isRequired,
-    selectedType: PropTypes.string.isRequired,
-    searchQuery: PropTypes.string, // Changed from isRequired to optional
-  };
-  handleCategoryClick = (category) => {
+const Navbar =(props)=> {
+  
+ const handleCategoryClick = (category) => {
     // Call the onCategoryChange function passed from props
-    this.props.onCategoryChange(category);
+    props.onCategoryChange(category);
   };
-  render() {
-    const selectedCountryOption = this.props.countries.find(
-      (country) => country.value === this.props.selectedCountry
+  
+    const selectedCountryOption = props.countries.find(
+      (country) => country.value === props.selectedCountry
     );
-    const typeOptions = this.props.types.map((type) => ({
+    const typeOptions = props.types.map((type) => ({
       value: type,
       label: type.charAt(0).toUpperCase() + type.slice(1),
     }));
     const selectedTypeOption = typeOptions.find(
-      (type) => type.value === this.props.selectedType
+      (type) => type.value === props.selectedType
     );
 
     return (
       <>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
           <div className="container-fluid">
             <Link className="navbar-brand" to="/">
               Daily News
@@ -53,12 +41,12 @@ export class Navbar extends Component {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <Link key="home" className="nav-link" onClick={() => this.handleCategoryClick("general")} to="/">
+                  <Link key="home" className="nav-link" onClick={() => handleCategoryClick("general")} to="/">
                     Home
                   </Link>
                 </li>
-                {this.props.selectedType==='top-headlines' && this.props.categories.map((element) => (
-                  <li  onClick={() => this.handleCategoryClick(element)} className="nav-item" key={element}>
+                {props.selectedType==='top-headlines' && props.categories.map((element) => (
+                  <li  onClick={() => handleCategoryClick(element)} className="nav-item" key={element}>
                     <Link
                       className="nav-link"
                       to={`/${element}`}
@@ -71,29 +59,29 @@ export class Navbar extends Component {
               <Select
                 value={selectedTypeOption}
                 options={typeOptions}
-                onChange={this.props.onTypeChange}
+                onChange={props.onTypeChange}
                 placeholder="Select type of news"
                 className="me-2 mt-2"
                 classNamePrefix="react-select"
               />
-              {this.props.selectedType === 'everything' && (
+              {props.selectedType === 'everything' && (
                 <form className="d-flex" role="search">
                   <input
                     className="form-control me-2 mt-2"
                     type="search"
-                    value={this.props.searchQuery}
+                    value={props.searchQuery}
                     name="q"
-                    onChange={this.props.onSearchChange}
+                    onChange={props.onSearchChange}
                     placeholder="Search"
                     aria-label="Search"
                   />
                 </form>
               )}
-              {this.props.selectedType === 'top-headlines' && (
+              {props.selectedType === 'top-headlines' && (
                 <Select
                   value={selectedCountryOption}
-                  options={this.props.countries}
-                  onChange={this.props.onCountryChange}
+                  options={props.countries}
+                  onChange={props.onCountryChange}
                   placeholder="Select a country"
                   className="me-2 mt-2"
                   classNamePrefix="react-select"
@@ -105,6 +93,5 @@ export class Navbar extends Component {
       </>
     );
   }
-}
 
 export default Navbar;

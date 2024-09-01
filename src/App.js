@@ -5,13 +5,13 @@ import News from './components/News';
 import { Offline, Online } from 'react-detect-offline';
 import { toast } from 'react-toastify';
 import LoadingBar from 'react-top-loading-bar';
-import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      apiKey: 'e2309018bba542b28ae221468ed4c3f5',
+      apiKey: process.env.REACT_APP_NEWS_API,
       countries: [],
       selectedCountry: 'IN',
       selectedType: 'top-headlines',

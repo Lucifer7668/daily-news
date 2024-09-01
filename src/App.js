@@ -5,28 +5,28 @@ import News from './components/News';
 import { Offline, Online } from 'react-detect-offline';
 import { toast } from 'react-toastify';
 import LoadingBar from 'react-top-loading-bar';
-import { HashRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom';
 
-export default class App extends Component {  constructor() {
+export default class App extends Component {
+  constructor() {
     super();
     this.state = {
       apiKey: 'e2309018bba542b28ae221468ed4c3f5',
-      // apiKey: 'b76577774d764fa4ac43bf930216a68e',
       countries: [],
       selectedCountry: 'IN',
       selectedType: 'top-headlines',
       selectedCategory: 'general',
       types: ['top-headlines', 'everything'],
       categories: ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
-      searchQuery: 'oil',
+      searchQuery: '',
       articles: [],
       loading: true,
       apiUrl: 'https://newsapi.org/v2/',
       alert: null,
       page: 1,
-      totalPages: null,
+      totalPages: 0,
       progress: 0,
-      categoryBadgeColors : {
+      categoryBadgeColors: {
         business: "text-bg-success",
         entertainment: "text-bg-warning",
         general: "text-bg-secondary",
@@ -42,6 +42,7 @@ export default class App extends Component {  constructor() {
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleNextClick = this.handleNextClick.bind(this);
     this.handlePrevClick = this.handlePrevClick.bind(this);
+    document.title = `${this.state.selectedCategory.toLowerCase().charAt(0).toUpperCase() + this.state.selectedCategory.slice(1)} - Daily News`;
   }
 
   async fetchNewsData(page) {
@@ -77,12 +78,12 @@ export default class App extends Component {  constructor() {
         toast.error(parsedData.message);
         this.setState({ loading: true });
       } else {
-        this.setState({
+        this.setState(prevState => ({
           progress: 70,
-          articles: parsedData.articles,
+          articles: [...prevState.articles, ...parsedData.articles], // Append new articles to existing ones
           loading: false,
           totalPages: totalPages,
-        });
+        }));
         this.setState({ progress: 100 });
       }
     } catch (error) {
@@ -130,7 +131,7 @@ export default class App extends Component {  constructor() {
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedCountry, selectedType, selectedCategory, searchQuery, page } = this.state;
-    
+
     if (
       prevState.selectedCountry !== selectedCountry ||
       prevState.selectedType !== selectedType ||
@@ -140,11 +141,18 @@ export default class App extends Component {  constructor() {
     ) {
       this.fetchNewsData(page);
     }
+    if (prevState.selectedCategory !== selectedCategory) {
+      document.title = `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} - Daily News`;
+    }
   }
 
   handleNextClick = () => {
     if (navigator.onLine) {
-      this.setState({ page: this.state.page + 1 });
+      this.setState(prevState => ({
+        page: prevState.page + 1
+      }), () => {
+        this.fetchNewsData(this.state.page);
+      });
     } else {
       toast.error('No Internet Connection');
     }
@@ -171,12 +179,12 @@ export default class App extends Component {  constructor() {
   }
 
   handleCategoryChange(category) {
-    this.setState({ selectedCategory: category, page: 1 });
+    this.setState({ selectedCategory: category, page: 1, articles: [] }); // Reset articles to append new data
   }
 
   render() {
     return (
-        <Router>
+      <Router>
         <div>
           <LoadingBar color="#f11946" progress={this.state.progress} onLoaderFinished={() => this.setState({ progress: 0 })} />
           <Offline></Offline>
@@ -198,18 +206,19 @@ export default class App extends Component {  constructor() {
               path="/"
               element={
                 <News
-                selectedCountry={this.state.selectedCountry}
-                countries={this.state.countries}
-                selectedType={this.state.selectedType}
-                searchQuery={this.state.searchQuery}
-                articles={this.state.articles}
-                loading={this.state.loading}
-                handleNextClick={this.handleNextClick}
-                handlePrevClick={this.handlePrevClick}
-                page={this.state.page}
-                totalPages={this.state.totalPages}
-                badgeColor={this.state.categoryBadgeColors[this.state.selectedCategory]} 
-              />
+                  selectedCountry={this.state.selectedCountry}
+                  countries={this.state.countries}
+                  selectedType={this.state.selectedType}
+                  selectedCategory={this.state.selectedCategory}
+                  searchQuery={this.state.searchQuery}
+                  articles={this.state.articles}
+                  loading={this.state.loading}
+                  handleNextClick={this.handleNextClick}
+                  handlePrevClick={this.handlePrevClick}
+                  page={this.state.page}
+                  totalPages={this.state.totalPages}
+                  badgeColor={this.state.categoryBadgeColors[this.state.selectedCategory]}
+                />
               }
             />
             <Route
@@ -228,7 +237,7 @@ export default class App extends Component {  constructor() {
                   handlePrevClick={this.handlePrevClick}
                   page={this.state.page}
                   totalPages={this.state.totalPages}
-                  badgeColor={this.state.categoryBadgeColors[this.state.selectedCategory]} 
+                  badgeColor={this.state.categoryBadgeColors[this.state.selectedCategory]}
                 />
               }
             />
@@ -238,4 +247,3 @@ export default class App extends Component {  constructor() {
     );
   }
 }
-

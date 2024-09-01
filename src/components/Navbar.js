@@ -73,13 +73,13 @@ export class Navbar extends Component {
                 options={typeOptions}
                 onChange={this.props.onTypeChange}
                 placeholder="Select type of news"
-                className="me-2"
+                className="me-2 mt-2"
                 classNamePrefix="react-select"
               />
               {this.props.selectedType === 'everything' && (
                 <form className="d-flex" role="search">
                   <input
-                    className="form-control me-2"
+                    className="form-control me-2 mt-2"
                     type="search"
                     value={this.props.searchQuery}
                     name="q"
@@ -95,7 +95,7 @@ export class Navbar extends Component {
                   options={this.props.countries}
                   onChange={this.props.onCountryChange}
                   placeholder="Select a country"
-                  className="me-2"
+                  className="me-2 mt-2"
                   classNamePrefix="react-select"
                 />
               )}

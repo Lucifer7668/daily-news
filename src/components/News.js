@@ -30,7 +30,7 @@ const News =(props)=> {
         )}
         <InfiniteScroll
           dataLength={props.articles.length}
-          next={props.handleNextClick}
+          next={props.fetchMoreData}
           hasMore={props.page < props.totalPages}
           loader={
             <div className="container">

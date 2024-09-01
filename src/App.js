@@ -144,6 +144,9 @@ const App = () => {
     fetchNewsData(page);
     
   };
+  const fetchMoreData = () => {
+    setPage(prevPage => prevPage + 1);
+  };
 
   return (
     <Router>
@@ -178,6 +181,7 @@ const App = () => {
                 page={page}
                 totalPages={totalPages}
                 badgeColor={categoryBadgeColors[selectedCategory]}
+                fetchMoreData={fetchMoreData}
               />
             }
           />
@@ -196,6 +200,7 @@ const App = () => {
                 page={page}
                 totalPages={totalPages}
                 badgeColor={categoryBadgeColors[selectedCategory]}
+                fetchMoreData={fetchMoreData}
               />
             }
           />

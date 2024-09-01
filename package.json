@@ -1,6 +1,6 @@
 {
   "homepage": "https://Lucifer7668.github.io/daily-news",
-  "name": "news-app",
+  "name": "daily-news",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
